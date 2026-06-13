@@ -19,8 +19,8 @@
 4. [Project Structure](#-project-structure)
 5. [Database Schema](#-database-schema)
 6. [Database Setup](#-database-setup)
-7. [Backend Setup (Express.js)](#-backend-setup-expressjs)
-8. [Frontend Setup (React + Vite)](#-frontend-setup-react--vite)
+7. [Backend Setup (Spring Boot)](#-backend-setup-spring-boot)
+8. [Frontend Setup (React + Vite + Tailwind)](#-frontend-setup-react--vite--tailwind)
 9. [API Reference](#-api-reference)
 10. [Command Sheet](#-command-sheet)
 11. [Author](#-author)
@@ -31,18 +31,22 @@
 
 - **👥 Multi-Role Authorization & Portals**:
   - **Admin**: Control panel to manage users/store owners (CRUD), add stores, assign stores to owners, and view system-wide metrics.
-  - **Normal User**: Browse available stores, submit/update a rating (1-5 stars) for any store, and manage account security.
-  - **Store Owner**: Monitoring dashboard featuring store details, list of customer reviews/ratings, and current average rating.
+  - **Normal User**: Browse available stores, submit/update ratings (1-5 stars) for stores, and manage account security.
+  - **Store Owner**: Monitoring dashboard featuring store details, list of customer ratings, and current overall average rating.
 - **🔐 Robust Security & Authentication**:
-  - Secure login/signup system powered by **JSON Web Tokens (JWT)** and **bcryptjs** password hashing.
-  - Granular role-based authorization middleware protecting API routes.
+  - Secure login/signup system powered by **JSON Web Tokens (JWT)** and **Spring Security**.
+  - Password hashing via **BCryptPasswordEncoder** and stateless authentication with JWT request filter.
+  - Granular role-based authorization rules protecting API routes (`admin`, `store_owner`, `user`).
 - **⚡ Modern Responsive UI**:
-  - Built with React 18, Vite, and structured Vanilla CSS.
+  - Built with React 18, Vite, and styled with **Tailwind CSS**.
   - Glassmorphic card layouts, responsive navigation bars, interactive hover-states, and custom toast notifications via **React Hot Toast**.
+  - Smooth page transitions and animations built using **Framer Motion**.
+  - Accessible primitive components powered by **Radix UI** (Avatar, Dialog, Dropdown Menu).
 - **⚙️ High-Performance REST API**:
-  - Built on Node.js and Express.js with a pooled MySQL database connection (mysql2).
-  - Schema-enforced input validations using `express-validator`.
-  - Global middleware error handler ensuring smooth failover processes.
+  - Built on **Java 17** and **Spring Boot 3.3.0** with **Spring Data JPA** (Hibernate) for persistence.
+  - Automatic MySQL table structure updates via Hibernate DDL config.
+  - Input validation using **Spring Boot Starter Validation** annotations (`@Valid`, `@NotBlank`, etc.).
+  - Global error handling returning structured error responses.
 
 ---
 
@@ -52,56 +56,73 @@
 <p align="left">
   <a href="https://react.dev"><img src="https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"></a>
   <a href="https://vite.dev"><img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=FFD62B" alt="Vite"></a>
+  <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind_CSS_3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"></a>
+  <a href="https://zustand.docs.pmnd.rs"><img src="https://img.shields.io/badge/Zustand_5.0-443E38?style=for-the-badge&logo=react&logoColor=white" alt="Zustand"></a>
+  <a href="https://framer.com/motion"><img src="https://img.shields.io/badge/Framer_Motion-000000?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion"></a>
+  <a href="https://radix-ui.com"><img src="https://img.shields.io/badge/Radix_UI-161618?style=for-the-badge&logo=radix-ui&logoColor=white" alt="Radix UI"></a>
+  <a href="https://lucide.dev"><img src="https://img.shields.io/badge/Lucide_Icons-black?style=for-the-badge&logo=lucide&logoColor=white" alt="Lucide"></a>
   <a href="https://reactrouter.com"><img src="https://img.shields.io/badge/React_Router_v6-CA4245?style=for-the-badge&logo=react-router&logoColor=white" alt="React Router"></a>
   <a href="https://axios-http.com"><img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white" alt="Axios"></a>
-  <a href="https://developer.mozilla.org/en-US/docs/Web/CSS"><img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3"></a>
 </p>
 
 ### ⚙️ Backend & Database
 <p align="left">
-  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"></a>
-  <a href="https://expressjs.com"><img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js"></a>
+  <a href="https://java.com"><img src="https://img.shields.io/badge/Java_17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 17"></a>
+  <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/Spring_Boot_3.3-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" alt="Spring Boot"></a>
+  <a href="https://spring.io/projects/spring-security"><img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white" alt="Spring Security"></a>
+  <a href="https://spring.io/projects/spring-data-jpa"><img src="https://img.shields.io/badge/Spring_Data_JPA-6DB33F?style=for-the-badge&logo=hibernate&logoColor=white" alt="Spring Data JPA"></a>
   <a href="https://www.mysql.com"><img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL"></a>
   <a href="https://jwt.io"><img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT"></a>
-  <a href="https://www.npmjs.com/package/bcryptjs"><img src="https://img.shields.io/badge/Bcrypt.js-430098?style=for-the-badge&logo=npm&logoColor=white" alt="Bcrypt"></a>
-  <a href="https://express-validator.github.io/docs"><img src="https://img.shields.io/badge/Express_Validator-5A29E4?style=for-the-badge&logo=javascript&logoColor=white" alt="Express Validator"></a>
+  <a href="https://maven.apache.org"><img src="https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white" alt="Maven"></a>
 </p>
 
 ---
 
 ## 🔗 Architecture & Workflow
 
-The sequence diagram below shows how a Normal User authenticates, loads the store directory, and submits/updates a store rating:
+The sequence diagram below shows how a Normal User authenticates, loads the store directory, and submits/updates a store rating under the Spring Security & Spring Boot backend:
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor User as User (React UI)
-    participant Server as Backend (Express REST API)
+    participant Sec as Spring Security / Filter
+    participant Ctrl as Controller (Spring Boot API)
+    participant Repo as Repository (Spring Data JPA)
     participant DB as Database (MySQL)
 
     rect rgb(30, 30, 40)
     Note over User,DB: Authentication & Fetching Stores
-    User->>Server: POST /api/auth/login (Email & Password)
-    Server->>DB: Query user by email
-    DB-->>Server: Return user record & password hash
-    Server->>Server: Validate password (bcrypt)
-    Server-->>User: Return JWT token & User details
-    User->>Server: GET /api/stores (Headers: Authorization Bearer JWT)
-    Server->>Server: Verify JWT Middleware
-    Server->>DB: Fetch stores & user's existing ratings
-    DB-->>Server: List of stores + ratings
-    Server-->>User: Render dashboard with stores & rating stars
+    User->>Sec: POST /api/auth/login (Email & Password)
+    Sec->>Ctrl: Forward login request
+    Ctrl->>Repo: Find User by email
+    Repo->>DB: Query user record
+    DB-->>Repo: Return User details
+    Ctrl->>Ctrl: Authenticate & Generate JWT Token
+    Ctrl-->>User: Return JWT token & User details
     end
 
     rect rgb(40, 50, 60)
-    Note over User,DB: Submit/Update Store Rating
-    User->>User: Select store and click star (1-5)
-    User->>Server: POST /api/ratings (Store ID & Rating)
-    Server->>Server: Verify JWT & Validate Rating (1-5)
-    Server->>DB: Insert or Update rating (ON DUPLICATE KEY UPDATE)
-    DB-->>Server: Rating saved successfully
-    Server-->>User: Return success message & updated average rating
+    Note over User,DB: Requesting Stores (Protected Route)
+    User->>Sec: GET /api/stores (Headers: Authorization Bearer JWT)
+    Sec->>Sec: Verify JWT token & check role (ROLE_user)
+    Sec->>Ctrl: Forward authenticated request
+    Ctrl->>Repo: Fetch stores with overall average & user rating
+    Repo->>DB: Execute native query with rating joins
+    DB-->>Repo: Return Store Projection records
+    Ctrl-->>User: Return stores with user rating and overall rating
+    end
+
+    rect rgb(50, 40, 60)
+    Note over User,DB: Submit / Update Store Rating
+    User->>User: Select store and select rating (1-5 stars)
+    User->>Sec: POST /api/ratings (Store ID & Rating) (Headers: Authorization Bearer JWT)
+    Sec->>Sec: Verify JWT & role
+    Sec->>Ctrl: Forward rating request
+    Ctrl->>Repo: Check existing rating or save new Rating
+    Repo->>DB: INSERT / UPDATE rating record
+    DB-->>Repo: Return saved entity details
+    Ctrl-->>User: Return success response
     end
 ```
 
@@ -112,57 +133,54 @@ sequenceDiagram
 ```text
 Store-Rating-Model/
 │
-├── backend/                      # Node.js & Express.js Backend REST API
-│   ├── config/                   # Database configuration
-│   │   └── db.js                 # MySQL pool connection setup
-│   ├── controllers/              # Route controller handler functions
-│   │   ├── adminController.js    # Admin operations (manage users & stores)
-│   │   ├── authController.js     # Signup and login business logic
-│   │   ├── ratingController.js   # Rating submissions and updates
-│   │   ├── storeController.js    # Store browsing query handling
-│   │   ├── storeOwnerController.js # Owner dashboard data
-│   │   └── userController.js     # User-profile specific actions (e.g., password changes)
-│   ├── middleware/               # Request validation & authentication
-│   │   ├── auth.js               # JWT verification & role authorization middleware
-│   │   └── validators.js         # Input validation rules (express-validator)
-│   ├── routes/                   # Router declarations
-│   │   ├── admin.js              # Admin endpoints mapping
-│   │   ├── auth.js               # Auth endpoints mapping
-│   │   ├── ratings.js            # Rating endpoints mapping
-│   │   ├── storeOwner.js         # Owner endpoints mapping
-│   │   ├── stores.js             # Store endpoints mapping
-│   │   └── users.js              # User settings endpoints mapping
-│   ├── .env.example              # Template for secret keys & ports
-│   ├── package.json              # Backend dependencies & npm scripts
-│   ├── schema.sql                # MySQL DB schema script
-│   └── server.js                 # Express Application Entry Point
-│
-├── frontend/                     # React + Vite Frontend Client
+├── backend/                      # Java Spring Boot Backend API
+│   ├── .mvn/                     # Maven Wrapper configuration files
 │   ├── src/
-│   │   ├── api/                  # API network abstraction
-│   │   │   └── axios.js          # Axios configuration with interceptors
-│   │   ├── components/           # Reusable functional components
+│   │   ├── main/
+│   │   │   ├── java/com/storerating/api/
+│   │   │   │   ├── StoreRatingApplication.java # Spring Boot main entrypoint
+│   │   │   │   ├── controller/   # REST Controllers (Auth, Admin, Stores, Ratings, StoreOwner, User, Health)
+│   │   │   │   ├── dto/          # Data Transfer Objects for Request/Response payloads
+│   │   │   │   ├── entity/       # JPA Entities mapping to MySQL tables
+│   │   │   │   ├── exception/    # Global Exception Handler and custom exception mappings
+│   │   │   │   ├── repository/   # Spring Data JPA Repository interfaces and SQL projections
+│   │   │   │   └── security/     # Spring Security configurations (JWT filter, password encoder, CORS)
+│   │   │   └── resources/
+│   │   │       └── application.properties # Spring configuration file (DB config, JPA config, JWT secret)
+│   │   └── test/                 # Test suites
+│   ├── mvnw                      # Maven Wrapper executable (Unix)
+│   ├── mvnw.cmd                  # Maven Wrapper executable (Windows)
+│   ├── pom.xml                   # Maven project descriptor
+│   └── schema.sql                # MySQL DB schema script with seed data
+│
+├── frontend/                     # React + Vite Frontend Client (styled with Tailwind CSS & Zustand)
+│   ├── src/
+│   │   ├── api/                  # API communication layer
+│   │   │   └── axios.js          # Axios configuration with request interceptors for auth tokens
+│   │   ├── components/           # Reusable UI components
 │   │   │   ├── Navbar.jsx        # Top navigation bar
-│   │   │   ├── ProtectedRoute.jsx # Authentication route guard
-│   │   │   └── StarRating.jsx    # Interactive star component
-│   │   ├── context/              # React state context providers
-│   │   │   └── AuthContext.jsx   # Global login/logout state manager
+│   │   │   ├── ProtectedRoute.jsx # Route authentication guard
+│   │   │   └── StarRating.jsx    # Interactive rating star component
+│   │   ├── store/                # Zustand State management
+│   │   │   └── useAuthStore.js   # Global authentication state store
 │   │   ├── pages/                # Page-level route views
-│   │   │   ├── AdminAddStore.jsx # Form to add new stores
-│   │   │   ├── AdminAddUser.jsx  # Form to register users/owners
-│   │   │   ├── AdminDashboard.jsx # Admin metric cards & overview
-│   │   │   ├── AdminStores.jsx   # Stores management datagrid
-│   │   │   ├── AdminUsers.jsx    # Users management datagrid
-│   │   │   ├── ChangePassword.jsx # Profile safety page
+│   │   │   ├── AdminAddStore.jsx # Admin form to create new stores
+│   │   │   ├── AdminAddUser.jsx  # Admin form to register users/owners
+│   │   │   ├── AdminDashboard.jsx # Admin metric overview
+│   │   │   ├── AdminStores.jsx   # Admin stores listing & filters
+│   │   │   ├── AdminUsers.jsx    # Admin user directory & details
+│   │   │   ├── ChangePassword.jsx # User security page
 │   │   │   ├── Login.jsx         # Sign-in portal page
 │   │   │   ├── Signup.jsx        # Sign-up page (Normal Users)
-│   │   │   ├── StoreOwnerDashboard.jsx # Owner stats overview
+│   │   │   ├── StoreOwnerDashboard.jsx # Owner stats & rater reviews
 │   │   │   └── UserStores.jsx    # User dashboard for store ratings
-│   │   ├── App.jsx               # Routes setup & layout configuration
-│   │   ├── index.css             # Main styling sheet
-│   │   └── main.jsx              # React mounting file
-│   ├── package.json              # Frontend libraries & package scripts
-│   └── vite.config.js            # Vite compiler configuration
+│   │   ├── App.jsx               # Navigation router configuration
+│   │   ├── index.css             # Tailwind CSS imports & custom styles
+│   │   └── main.jsx              # React mounting entry point
+│   ├── package.json              # Frontend dependencies and npm scripts
+│   ├── postcss.config.js         # PostCSS configuration
+│   ├── tailwind.config.js        # Tailwind CSS configuration
+│   └── vite.config.js            # Vite compiler configuration with API proxy
 │
 └── README.md                     # Comprehensive Project Documentation
 ```
@@ -212,49 +230,40 @@ The system uses three database tables designed with MySQL constraints and indexe
 
 ---
 
-## ⚙️ Backend Setup (Express.js)
+## ⚙️ Backend Setup (Spring Boot)
 
 ### 📋 Prerequisites
-- **Node.js**: v18.x or newer installed.
-- **npm** (bundled with Node).
+- **Java Development Kit (JDK)**: Version 17 or newer installed.
+- **Maven**: Version 3.6+ (or use the provided Maven Wrapper `mvnw`).
 
 ### 🧰 Steps to Run
 1. Navigate to the backend directory:
    ```bash
    cd backend
    ```
-2. Install Node.js packages:
-   ```bash
-   npm install
-   ```
-3. Copy the `.env.example` file to create your local `.env` configuration:
-   - On Windows (CMD/PowerShell):
-     ```powershell
-     copy .env.example .env
-     ```
-   - On macOS/Linux:
-     ```bash
-     cp .env.example .env
-     ```
-4. Configure your database details inside `.env`:
-   ```env
-   PORT=5000
+2. Define the database details in your environment variables or configure them directly inside `src/main/resources/application.properties`:
+   ```properties
    DB_HOST=localhost
+   DB_NAME=store_rating_db
    DB_USER=your_mysql_username
    DB_PASSWORD=your_mysql_password
-   DB_NAME=store_rating_db
-   JWT_SECRET=your_super_secret_jwt_key
-   FRONTEND_URL=http://localhost:3000
+   JWT_SECRET=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
    ```
-5. Startup the development API server:
-   ```bash
-   npm run dev
-   ```
-   > 📍 The Express API server will launch on port **`5000`** (`http://localhost:5000`).
+3. Startup the development API server using the Maven Wrapper:
+   - **Windows**:
+     ```powershell
+     .\mvnw.cmd spring-boot:run
+     ```
+   - **macOS/Linux**:
+     ```bash
+     chmod +x mvnw
+     ./mvnw spring-boot:run
+     ```
+   > 📍 The Spring Boot API server will launch on port **`5000`** (`http://localhost:5000`).
 
 ---
 
-## 💻 Frontend Setup (React + Vite)
+## 💻 Frontend Setup (React + Vite + Tailwind)
 
 ### 📋 Prerequisites
 - **Node.js**: v18.x or newer installed.
@@ -272,7 +281,7 @@ The system uses three database tables designed with MySQL constraints and indexe
    ```bash
    npm run dev
    ```
-   > 📍 The Vite dev server will launch on port **`3000`**. Access it via **`http://localhost:3000`** in your browser.
+   > 📍 The Vite dev server will launch on port **`3000`**. Access it via **`http://localhost:3000`** in your browser. All requests to `/api` will automatically be proxied to the backend at `http://localhost:5000`.
 
 ---
 
@@ -292,7 +301,7 @@ The system uses three database tables designed with MySQL constraints and indexe
 ### 🏪 Store Rating Portal
 | Method | Endpoint | Description | Query/Body params |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/api/stores` | Fetch all stores with overall average & current user's rating | None |
+| `GET` | `/api/stores` | Fetch all stores with overall average & current user's rating | `name`, `address` (optional filters), `sortBy`, `sortOrder` (optional sorting) |
 | `POST` | `/api/ratings` | Submit a rating (1-5) for a store (Normal user only) | `storeId`, `rating` in body |
 | `PUT` | `/api/ratings/:id` | Update an existing rating (Normal user only) | `rating` in body |
 
@@ -305,10 +314,10 @@ The system uses three database tables designed with MySQL constraints and indexe
 | Method | Endpoint | Description | Query/Body params |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/api/admin/dashboard` | Fetch overall application statistics (total ratings, stores, users) | None |
-| `GET` | `/api/admin/users` | List all registered users (Normal users, Store owners, Admins) | None |
+| `GET` | `/api/admin/users` | List all registered users (Normal users, Store owners, Admins) | `name`, `email`, `address`, `role`, `sortBy`, `sortOrder` (optional filters) |
 | `POST` | `/api/admin/users` | Register a new user with any specified role | `name`, `email`, `password`, `address`, `role` in body |
-| `GET` | `/api/admin/users/:id` | Get detail record of a user | Path Variable |
-| `GET` | `/api/admin/stores` | List all stores alongside their assigned owner names | None |
+| `GET` | `/api/admin/users/:id` | Get detail record of a user (including owned stores if owner) | Path Variable |
+| `GET` | `/api/admin/stores` | List all stores alongside their assigned owner names | `name`, `email`, `address`, `sortBy`, `sortOrder` (optional filters) |
 | `POST` | `/api/admin/stores` | Create a new store and assign owner link | `name`, `email`, `address`, `ownerId` in body |
 
 ---
@@ -317,9 +326,8 @@ The system uses three database tables designed with MySQL constraints and indexe
 
 | Task | Component | Command |
 | :--- | :--- | :--- |
-| **Install Backend Dependencies** | Backend | `npm install` |
-| **Run Backend Dev (Nodemon)** | Backend | `npm run dev` |
-| **Run Backend Production** | Backend | `npm start` |
+| **Run Backend Dev (Spring Boot)** | Backend | Windows: `.\mvnw.cmd spring-boot:run` <br> Unix: `./mvnw spring-boot:run` |
+| **Build Backend Production Jar** | Backend | `mvnw clean package` |
 | **Install Frontend Dependencies** | Frontend | `npm install` |
 | **Run Frontend Dev (Vite)** | Frontend | `npm run dev` |
 | **Build Frontend Static Files** | Frontend | `npm run build` |
