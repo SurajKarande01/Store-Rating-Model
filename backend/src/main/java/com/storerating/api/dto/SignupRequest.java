@@ -19,15 +19,23 @@ public class SignupRequest {
     private String password;
 
     private String address;
+    private String phone;
+    private String location;
+    private String storeDescription;
+    private String role;
 
     // Constructors
     public SignupRequest() {}
 
-    public SignupRequest(String name, String email, String password, String address) {
+    public SignupRequest(String name, String email, String password, String address, String phone, String location, String storeDescription, String role) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.address = address;
+        this.phone = phone;
+        this.location = location;
+        this.storeDescription = storeDescription;
+        this.role = role;
     }
 
     // Getters and Setters
@@ -42,4 +50,16 @@ public class SignupRequest {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+
+    public String getStoreDescription() { return storeDescription; }
+    public void setStoreDescription(String storeDescription) { this.storeDescription = storeDescription; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }

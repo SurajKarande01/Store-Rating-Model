@@ -1,9 +1,7 @@
 package com.storerating.api.controller;
 
 import com.storerating.api.dto.*;
-import com.storerating.api.entity.Role;
-import com.storerating.api.entity.Store;
-import com.storerating.api.entity.User;
+import com.storerating.api.entity.*;
 import com.storerating.api.repository.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +27,9 @@ public class AdminController {
     private RatingRepository ratingRepository;
 
     @Autowired
+    private ActivityRepository activityRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @GetMapping("/dashboard")
@@ -42,6 +43,11 @@ public class AdminController {
                 .totalStores(totalStores)
                 .totalRatings(totalRatings)
                 .build());
+    }
+
+    @GetMapping("/activities")
+    public ResponseEntity<List<Activity>> getActivities() {
+        return ResponseEntity.ok(activityRepository.findAllByOrderByCreatedAtDesc());
     }
 
     @PostMapping("/users")
@@ -66,10 +72,34 @@ public class AdminController {
                 .email(request.getEmail())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .address(request.getAddress() != null ? request.getAddress() : "")
+                .phone("")
+                .location("")
+                .storeDescription("")
                 .role(role)
+                .requestedModerator(false)
                 .build();
 
         User savedUser = userRepository.save(user);
+
+        // Auto-create store if role is store_owner
+        if (role == Role.store_owner) {
+            Store store = Store.builder()
+                    .name(savedUser.getName() + "'s Store")
+                    .email(savedUser.getEmail())
+                    .address(savedUser.getAddress())
+                    .description("")
+                    .owner(savedUser)
+                    .build();
+            storeRepository.save(store);
+        }
+
+        // Log activity
+        activityRepository.save(Activity.builder()
+                .userId(savedUser.getId())
+                .userName(savedUser.getName())
+                .action("CREATE_USER")
+                .details("Admin created user: " + savedUser.getName() + " with role " + savedUser.getRole().name())
+                .build());
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "User created successfully.");
@@ -87,7 +117,7 @@ public class AdminController {
             @RequestParam(required = false) String sortOrder) {
 
         String filterName = (name != null && !name.trim().isEmpty()) ? name.trim() : null;
-        String filterEmail = (filterEmail = (email != null && !email.trim().isEmpty()) ? email.trim() : null);
+        String filterEmail = (email != null && !email.trim().isEmpty()) ? email.trim() : null;
         String filterAddress = (address != null && !address.trim().isEmpty()) ? address.trim() : null;
 
         Role filterRole = null;
@@ -153,6 +183,10 @@ public class AdminController {
                     .role(u.getRole().name())
                     .createdAt(u.getCreatedAt())
                     .rating(avgRating)
+                    .phone(u.getPhone())
+                    .location(u.getLocation())
+                    .storeDescription(u.getStoreDescription())
+                    .requestedModerator(u.getRequestedModerator())
                     .build();
         }).collect(Collectors.toList());
 
@@ -201,8 +235,118 @@ public class AdminController {
                 .createdAt(u.getCreatedAt())
                 .rating(overallRating)
                 .stores(storesList)
+                .phone(u.getPhone())
+                .location(u.getLocation())
+                .storeDescription(u.getStoreDescription())
+                .requestedModerator(u.getRequestedModerator())
                 .build();
 
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/users/{id}/promote-moderator")
+    public ResponseEntity<?> promoteModerator(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getRole() != Role.user && user.getRole() != Role.moderator) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Only Simple Users or existing Moderators can be promoted.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        user.setRole(Role.moderator);
+        user.setRequestedModerator(false);
+        userRepository.save(user);
+
+        // Log activity
+        activityRepository.save(Activity.builder()
+                .action("PROMOTED_TO_MODERATOR")
+                .details("Admin promoted user '" + user.getName() + "' to Moderator role.")
+                .userId(user.getId())
+                .userName(user.getName())
+                .build());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User promoted to Moderator successfully.");
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/users/{id}/demote-moderator")
+    public ResponseEntity<?> demoteModerator(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getRole() != Role.moderator) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "User is not a Moderator.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        user.setRole(Role.user);
+        user.setRequestedModerator(false);
+        userRepository.save(user);
+
+        // Log activity
+        activityRepository.save(Activity.builder()
+                .action("DEMOTED_FROM_MODERATOR")
+                .details("Admin demoted user '" + user.getName() + "' back to Simple User role.")
+                .userId(user.getId())
+                .userName(user.getName())
+                .build());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Moderator demoted to Simple User successfully.");
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getRole() == Role.admin) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Cannot delete an administrator account.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        // Delete user stores (if store owner)
+        if (user.getRole() == Role.store_owner) {
+            List<Store> ownedStores = storeRepository.findByOwnerId(user.getId());
+            for (Store s : ownedStores) {
+                storeRepository.delete(s);
+            }
+        }
+
+        userRepository.delete(user);
+
+        // Log activity
+        activityRepository.save(Activity.builder()
+                .action("DELETED_USER")
+                .details("Admin deleted user account: " + user.getName() + " (" + user.getEmail() + ")")
+                .build());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User account deleted successfully.");
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/reviews/{id}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long id) {
+        Rating rating = ratingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rating not found"));
+
+        ratingRepository.delete(rating);
+
+        // Log activity
+        activityRepository.save(Activity.builder()
+                .action("DELETED_REVIEW")
+                .details("Admin deleted review by " + rating.getUser().getName() + " for store '" + rating.getStore().getName() + "'.")
+                .build());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Review deleted successfully.");
         return ResponseEntity.ok(response);
     }
 
@@ -234,10 +378,17 @@ public class AdminController {
                 .name(request.getName())
                 .email(request.getEmail())
                 .address(request.getAddress() != null ? request.getAddress() : "")
+                .description("")
                 .owner(owner)
                 .build();
 
         Store savedStore = storeRepository.save(store);
+
+        // Log activity
+        activityRepository.save(Activity.builder()
+                .action("CREATE_STORE")
+                .details("Admin created store: " + savedStore.getName() + " owned by " + (owner != null ? owner.getName() : "None"))
+                .build());
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Store created successfully.");

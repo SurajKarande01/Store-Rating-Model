@@ -6,16 +6,24 @@ public class UserResponse {
     private String email;
     private String role;
     private String address;
+    private String phone;
+    private String location;
+    private String storeDescription;
+    private Boolean requestedModerator;
 
     // Constructors
     public UserResponse() {}
 
-    public UserResponse(Long id, String name, String email, String role, String address) {
+    public UserResponse(Long id, String name, String email, String role, String address, String phone, String location, String storeDescription, Boolean requestedModerator) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
         this.address = address;
+        this.phone = phone;
+        this.location = location;
+        this.storeDescription = storeDescription;
+        this.requestedModerator = requestedModerator;
     }
 
     // Getters and Setters
@@ -34,6 +42,18 @@ public class UserResponse {
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+
+    public String getStoreDescription() { return storeDescription; }
+    public void setStoreDescription(String storeDescription) { this.storeDescription = storeDescription; }
+
+    public Boolean getRequestedModerator() { return requestedModerator; }
+    public void setRequestedModerator(Boolean requestedModerator) { this.requestedModerator = requestedModerator; }
+
     // Manual Builder
     public static UserResponseBuilder builder() {
         return new UserResponseBuilder();
@@ -45,15 +65,23 @@ public class UserResponse {
         private String email;
         private String role;
         private String address;
+        private String phone;
+        private String location;
+        private String storeDescription;
+        private Boolean requestedModerator;
 
         public UserResponseBuilder id(Long id) { this.id = id; return this; }
         public UserResponseBuilder name(String name) { this.name = name; return this; }
         public UserResponseBuilder email(String email) { this.email = email; return this; }
         public UserResponseBuilder role(String role) { this.role = role; return this; }
         public UserResponseBuilder address(String address) { this.address = address; return this; }
+        public UserResponseBuilder phone(String phone) { this.phone = phone; return this; }
+        public UserResponseBuilder location(String location) { this.location = location; return this; }
+        public UserResponseBuilder storeDescription(String storeDescription) { this.storeDescription = storeDescription; return this; }
+        public UserResponseBuilder requestedModerator(Boolean requestedModerator) { this.requestedModerator = requestedModerator; return this; }
 
         public UserResponse build() {
-            return new UserResponse(id, name, email, role, address);
+            return new UserResponse(id, name, email, role, address, phone, location, storeDescription, requestedModerator);
         }
     }
 }

@@ -3,12 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { User, Mail, MapPin, Lock, ArrowRight, Loader2, Star } from 'lucide-react';
+import { User, Mail, MapPin, Lock, Phone, FileText, ArrowRight, Loader2, Star, Shield } from 'lucide-react';
 
 const validate = (form) => {
   const errors = {};
-  if (form.name.length < 20 || form.name.length > 60) {
-    errors.name = 'Name must be between 20 and 60 characters.';
+  if (form.name.length < 5 || form.name.length > 60) {
+    errors.name = 'Name must be between 5 and 60 characters.';
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
     errors.email = 'Invalid email format.';
@@ -23,11 +23,26 @@ const validate = (form) => {
   if (form.address.length > 400) {
     errors.address = 'Address cannot exceed 400 characters.';
   }
+  if (form.phone && !/^\+?[0-9\s-]{7,15}$/.test(form.phone)) {
+    errors.phone = 'Please enter a valid phone number (7-15 digits).';
+  }
+  if (form.role === 'store_owner' && !form.storeDescription) {
+    errors.storeDescription = 'Store description is required for store owners.';
+  }
   return errors;
 };
 
 const Signup = () => {
-  const [form, setForm] = useState({ name: '', email: '', password: '', address: '' });
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    address: '',
+    phone: '',
+    location: '',
+    storeDescription: '',
+    role: 'user'
+  });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -81,46 +96,89 @@ const Signup = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-              Full Name (20-60 chars)
-            </label>
-            <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-              <input
-                name="name"
-                type="text"
-                className={`w-full pl-11 pr-4 py-2.5 glass-input text-slate-200 text-sm ${
-                  errors.name ? 'border-red-500/50 focus:border-red-500' : ''
-                }`}
-                placeholder="John Doe"
-                value={form.name}
-                onChange={handleChange}
-                required
-              />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+                Full Name (5-60 chars)
+              </label>
+              <div className="relative">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <input
+                  name="name"
+                  type="text"
+                  className={`w-full pl-11 pr-4 py-2.5 glass-input text-slate-200 text-sm ${
+                    errors.name ? 'border-red-500/50 focus:border-red-500' : ''
+                  }`}
+                  placeholder="John Doe"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
             </div>
-            {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <input
+                  name="email"
+                  type="email"
+                  className={`w-full pl-11 pr-4 py-2.5 glass-input text-slate-200 text-sm ${
+                    errors.email ? 'border-red-500/50 focus:border-red-500' : ''
+                  }`}
+                  placeholder="name@example.com"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
+            </div>
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-              Email Address
-            </label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-              <input
-                name="email"
-                type="email"
-                className={`w-full pl-11 pr-4 py-2.5 glass-input text-slate-200 text-sm ${
-                  errors.email ? 'border-red-500/50 focus:border-red-500' : ''
-                }`}
-                placeholder="name@example.com"
-                value={form.email}
-                onChange={handleChange}
-                required
-              />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+                Phone Number
+              </label>
+              <div className="relative">
+                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <input
+                  name="phone"
+                  type="text"
+                  className={`w-full pl-11 pr-4 py-2.5 glass-input text-slate-200 text-sm ${
+                    errors.phone ? 'border-red-500/50 focus:border-red-500' : ''
+                  }`}
+                  placeholder="123-456-7890"
+                  value={form.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone}</p>}
             </div>
-            {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+                Location
+              </label>
+              <div className="relative">
+                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <input
+                  name="location"
+                  type="text"
+                  className="w-full pl-11 pr-4 py-2.5 glass-input text-slate-200 text-sm"
+                  placeholder="New York, USA"
+                  value={form.location}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
           </div>
 
           <div className="space-y-1">
@@ -143,33 +201,80 @@ const Signup = () => {
             {errors.address && <p className="text-red-400 text-xs mt-1">{errors.address}</p>}
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-              Password (8-16 chars, 1 Upper, 1 Special)
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-              <input
-                name="password"
-                type="password"
-                className={`w-full pl-11 pr-4 py-2.5 glass-input text-slate-200 text-sm ${
-                  errors.password ? 'border-red-500/50 focus:border-red-500' : ''
-                }`}
-                placeholder="••••••••"
-                value={form.password}
-                onChange={handleChange}
-                required
-              />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+                Account Role
+              </label>
+              <div className="relative">
+                <Shield className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <select
+                  name="role"
+                  className="w-full pl-11 pr-4 py-2.5 glass-input text-slate-200 text-sm cursor-pointer appearance-none"
+                  value={form.role}
+                  onChange={handleChange}
+                >
+                  <option value="user">Rater (Simple User)</option>
+                  <option value="store_owner">Store Owner</option>
+                </select>
+              </div>
             </div>
-            {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+                Password (8-16 chars, 1 Upper, 1 Special)
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <input
+                  name="password"
+                  type="password"
+                  className={`w-full pl-11 pr-4 py-2.5 glass-input text-slate-200 text-sm ${
+                    errors.password ? 'border-red-500/50 focus:border-red-500' : ''
+                  }`}
+                  placeholder="••••••••"
+                  value={form.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
+            </div>
           </div>
+
+          {form.role === 'store_owner' && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="space-y-1"
+            >
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+                Store Description
+              </label>
+              <div className="relative">
+                <FileText className="absolute left-3.5 top-3 text-slate-500" size={18} />
+                <textarea
+                  name="storeDescription"
+                  rows={2}
+                  className={`w-full pl-11 pr-4 py-2.5 glass-input text-slate-200 text-sm resize-none ${
+                    errors.storeDescription ? 'border-red-500/50 focus:border-red-500' : ''
+                  }`}
+                  placeholder="Describe your store features, products, or services..."
+                  value={form.storeDescription}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              {errors.storeDescription && <p className="text-red-400 text-xs mt-1">{errors.storeDescription}</p>}
+            </motion.div>
+          )}
 
           <motion.button
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 gradient-button mt-2"
+            className="w-full py-2.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 gradient-button mt-4"
           >
             {loading ? (
               <>

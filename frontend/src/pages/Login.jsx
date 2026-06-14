@@ -22,6 +22,7 @@ const Login = () => {
       const redirectMap = { 
         admin: '/admin/dashboard', 
         user: '/stores', 
+        moderator: '/stores',
         store_owner: '/owner/dashboard' 
       };
       navigate(redirectMap[data.user.role] || '/');

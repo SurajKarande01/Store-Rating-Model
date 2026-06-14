@@ -20,5 +20,6 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
     @Query("SELECT COUNT(r) FROM Rating r WHERE r.store.id IN :storeIds")
     Long countRatingsForStores(@Param("storeIds") List<Long> storeIds);
 
-    List<Rating> findByStoreIdInOrderByCreatedAtDesc(List<Long> storeIds);
+    List<Rating> findByStoreIdInOrderByPinnedDescCreatedAtDesc(List<Long> storeIds);
+    List<Rating> findByStoreIdOrderByPinnedDescCreatedAtDesc(Long storeId);
 }

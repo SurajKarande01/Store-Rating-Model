@@ -22,6 +22,7 @@ const App = () => {
     const map = { 
       admin: '/admin/dashboard', 
       user: '/stores', 
+      moderator: '/stores',
       store_owner: '/owner/dashboard' 
     };
     return map[user?.role] || '/login';
@@ -64,19 +65,19 @@ const App = () => {
 
           {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>} />
-          <Route path="/admin/users" element={<ProtectedRoute roles={['admin']}><AdminUsers /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute roles={['admin', 'moderator']}><AdminUsers /></ProtectedRoute>} />
           <Route path="/admin/stores" element={<ProtectedRoute roles={['admin']}><AdminStores /></ProtectedRoute>} />
           <Route path="/admin/add-user" element={<ProtectedRoute roles={['admin']}><AdminAddUser /></ProtectedRoute>} />
           <Route path="/admin/add-store" element={<ProtectedRoute roles={['admin']}><AdminAddStore /></ProtectedRoute>} />
 
           {/* Normal User Routes */}
-          <Route path="/stores" element={<ProtectedRoute roles={['user']}><UserStores /></ProtectedRoute>} />
+          <Route path="/stores" element={<ProtectedRoute roles={['user', 'moderator']}><UserStores /></ProtectedRoute>} />
 
           {/* Store Owner Routes */}
           <Route path="/owner/dashboard" element={<ProtectedRoute roles={['store_owner']}><StoreOwnerDashboard /></ProtectedRoute>} />
 
           {/* Shared Routes */}
-          <Route path="/change-password" element={<ProtectedRoute roles={['admin', 'user', 'store_owner']}><ChangePassword /></ProtectedRoute>} />
+          <Route path="/change-password" element={<ProtectedRoute roles={['admin', 'user', 'store_owner', 'moderator']}><ChangePassword /></ProtectedRoute>} />
 
           {/* Default redirect */}
           <Route path="*" element={<Navigate to={getHomeRedirect()} />} />

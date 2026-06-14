@@ -13,12 +13,15 @@ public class RatingRequest {
     @Max(value = 5, message = "Rating must not exceed 5")
     private Integer rating;
 
+    private String comment;
+
     // Constructors
     public RatingRequest() {}
 
-    public RatingRequest(Long storeId, Integer rating) {
+    public RatingRequest(Long storeId, Integer rating, String comment) {
         this.storeId = storeId;
         this.rating = rating;
+        this.comment = comment;
     }
 
     // Getters and Setters
@@ -27,4 +30,7 @@ public class RatingRequest {
 
     public Integer getRating() { return rating; }
     public void setRating(Integer rating) { this.rating = rating; }
+
+    public String getComment() { return comment; }
+    public void setComment(String comment) { this.comment = comment; }
 }

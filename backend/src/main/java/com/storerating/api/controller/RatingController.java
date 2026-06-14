@@ -4,9 +4,11 @@ import com.storerating.api.dto.RatingRequest;
 import com.storerating.api.entity.Rating;
 import com.storerating.api.entity.Store;
 import com.storerating.api.entity.User;
+import com.storerating.api.entity.Activity;
 import com.storerating.api.repository.RatingRepository;
 import com.storerating.api.repository.StoreRepository;
 import com.storerating.api.repository.UserRepository;
+import com.storerating.api.repository.ActivityRepository;
 import com.storerating.api.security.UserPrincipal;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class RatingController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ActivityRepository activityRepository;
 
     @PostMapping
     public ResponseEntity<?> submitRating(
@@ -59,9 +64,19 @@ public class RatingController {
                 .user(user)
                 .store(storeOpt.get())
                 .rating(request.getRating())
+                .comment(request.getComment() != null ? request.getComment() : "")
+                .pinned(false)
                 .build();
 
         Rating savedRating = ratingRepository.save(rating);
+
+        // Log activity
+        activityRepository.save(Activity.builder()
+                .userId(user.getId())
+                .userName(user.getName())
+                .action("SUBMIT_RATING")
+                .details(user.getName() + " rated store '" + storeOpt.get().getName() + "' as " + request.getRating() + " stars.")
+                .build());
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Rating submitted successfully.");
@@ -106,10 +121,57 @@ public class RatingController {
 
         Rating rating = ratingOpt.get();
         rating.setRating(ratingValue);
+        
+        Object commentObj = body.get("comment");
+        if (commentObj != null) {
+            rating.setComment(commentObj.toString());
+        }
+        
         ratingRepository.save(rating);
+
+        // Log activity
+        activityRepository.save(Activity.builder()
+                .userId(userPrincipal.getId())
+                .userName(userPrincipal.getName())
+                .action("UPDATE_RATING")
+                .details(userPrincipal.getName() + " updated rating for '" + rating.getStore().getName() + "' to " + ratingValue + " stars.")
+                .build());
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "Rating updated successfully.");
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteRating(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Long id) {
+
+        Rating rating = ratingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rating not found"));
+
+        boolean isOwn = rating.getUser().getId().equals(userPrincipal.getId());
+        boolean isAdmin = userPrincipal.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_admin"));
+        boolean isModerator = userPrincipal.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_moderator"));
+
+        if (!isOwn && !isAdmin && !isModerator) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "You are not authorized to delete this rating.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
+
+        ratingRepository.delete(rating);
+
+        // Log activity
+        activityRepository.save(Activity.builder()
+                .userId(userPrincipal.getId())
+                .userName(userPrincipal.getName())
+                .action("DELETE_RATING")
+                .details(userPrincipal.getName() + " deleted review by " + rating.getUser().getName() + " for store '" + rating.getStore().getName() + "'.")
+                .build());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Review deleted successfully.");
         return ResponseEntity.ok(response);
     }
 }

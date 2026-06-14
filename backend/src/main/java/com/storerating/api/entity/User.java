@@ -30,6 +30,18 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column(length = 20)
+    private String phone;
+
+    @Column(length = 255)
+    private String location;
+
+    @Column(name = "store_description", length = 1000)
+    private String storeDescription;
+
+    @Column(name = "requested_moderator", nullable = false)
+    private Boolean requestedModerator = false;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -41,13 +53,17 @@ public class User {
     // Constructors
     public User() {}
 
-    public User(Long id, String name, String email, String passwordHash, String address, Role role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public User(Long id, String name, String email, String passwordHash, String address, Role role, String phone, String location, String storeDescription, Boolean requestedModerator, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
         this.address = address;
         this.role = role;
+        this.phone = phone;
+        this.location = location;
+        this.storeDescription = storeDescription;
+        this.requestedModerator = requestedModerator;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -71,6 +87,18 @@ public class User {
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
 
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+
+    public String getStoreDescription() { return storeDescription; }
+    public void setStoreDescription(String storeDescription) { this.storeDescription = storeDescription; }
+
+    public Boolean getRequestedModerator() { return requestedModerator; }
+    public void setRequestedModerator(Boolean requestedModerator) { this.requestedModerator = requestedModerator; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
@@ -89,6 +117,10 @@ public class User {
         private String passwordHash;
         private String address;
         private Role role;
+        private String phone;
+        private String location;
+        private String storeDescription;
+        private Boolean requestedModerator = false;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
@@ -98,11 +130,15 @@ public class User {
         public UserBuilder passwordHash(String passwordHash) { this.passwordHash = passwordHash; return this; }
         public UserBuilder address(String address) { this.address = address; return this; }
         public UserBuilder role(Role role) { this.role = role; return this; }
+        public UserBuilder phone(String phone) { this.phone = phone; return this; }
+        public UserBuilder location(String location) { this.location = location; return this; }
+        public UserBuilder storeDescription(String storeDescription) { this.storeDescription = storeDescription; return this; }
+        public UserBuilder requestedModerator(Boolean requestedModerator) { this.requestedModerator = requestedModerator; return this; }
         public UserBuilder createdAt(LocalDateTime createdAt) { this.createdAt = createdAt; return this; }
         public UserBuilder updatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; return this; }
 
         public User build() {
-            return new User(id, name, email, passwordHash, address, role, createdAt, updatedAt);
+            return new User(id, name, email, passwordHash, address, role, phone, location, storeDescription, requestedModerator, createdAt, updatedAt);
         }
     }
 }

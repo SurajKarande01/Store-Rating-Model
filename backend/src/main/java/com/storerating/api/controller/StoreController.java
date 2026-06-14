@@ -1,5 +1,7 @@
 package com.storerating.api.controller;
 
+import com.storerating.api.entity.Rating;
+import com.storerating.api.repository.RatingRepository;
 import com.storerating.api.repository.StoreProjection;
 import com.storerating.api.repository.StoreRepository;
 import com.storerating.api.security.UserPrincipal;
@@ -9,7 +11,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/stores")
@@ -17,6 +22,9 @@ public class StoreController {
 
     @Autowired
     private StoreRepository storeRepository;
+
+    @Autowired
+    private RatingRepository ratingRepository;
 
     @GetMapping
     public ResponseEntity<List<StoreProjection>> getAllStores(
@@ -26,7 +34,6 @@ public class StoreController {
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String sortOrder) {
 
-        // Set search wildcards for SQL LIKE
         String searchName = (name != null && !name.trim().isEmpty()) ? name.trim() : null;
         String searchAddress = (address != null && !address.trim().isEmpty()) ? address.trim() : null;
 
@@ -58,5 +65,25 @@ public class StoreController {
         });
 
         return ResponseEntity.ok(stores);
+    }
+
+    @GetMapping("/{id}/ratings")
+    public ResponseEntity<?> getStoreRatings(@PathVariable Long id) {
+        List<Rating> ratings = ratingRepository.findByStoreIdOrderByPinnedDescCreatedAtDesc(id);
+        
+        List<Map<String, Object>> response = ratings.stream().map(r -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", r.getId());
+            map.put("rating", r.getRating());
+            map.put("comment", r.getComment());
+            map.put("pinned", r.getPinned());
+            map.put("createdAt", r.getCreatedAt());
+            map.put("userName", r.getUser().getName());
+            map.put("userEmail", r.getUser().getEmail());
+            map.put("userId", r.getUser().getId());
+            return map;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
     }
 }

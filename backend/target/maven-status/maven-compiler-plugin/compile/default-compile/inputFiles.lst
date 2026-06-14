@@ -1,6 +1,7 @@
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\controller\AdminController.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\controller\AuthController.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\controller\HealthController.java
+D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\controller\ModeratorController.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\controller\RatingController.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\controller\StoreController.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\controller\StoreOwnerController.java
@@ -18,11 +19,13 @@ D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerati
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\dto\SignupRequest.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\dto\StoreOwnerDashboardResponse.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\dto\UserResponse.java
+D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\entity\Activity.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\entity\Rating.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\entity\Role.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\entity\Store.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\entity\User.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\exception\GlobalExceptionHandler.java
+D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\repository\ActivityRepository.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\repository\AdminStoreProjection.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\repository\RatingRepository.java
 D:\Projects\Final Project\Store-Rating-Model\backend\src\main\java\com\storerating\api\repository\StoreProjection.java

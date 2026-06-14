@@ -19,6 +19,10 @@ const Navbar = () => {
         { to: '/admin/users', label: 'Users', icon: Users },
         { to: '/admin/stores', label: 'Stores', icon: Store },
       ],
+      moderator: [
+        { to: '/stores', label: 'Browse Stores', icon: Store },
+        { to: '/admin/users', label: 'Users', icon: Users },
+      ],
       user: [
         { to: '/stores', label: 'Browse Stores', icon: Store },
       ],
@@ -66,6 +70,8 @@ const Navbar = () => {
         return 'bg-red-500/15 text-red-400 border border-red-500/20';
       case 'store_owner':
         return 'bg-amber-500/15 text-amber-400 border border-amber-500/20';
+      case 'moderator':
+        return 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/20';
       default:
         return 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20';
     }
@@ -74,6 +80,7 @@ const Navbar = () => {
   const getRoleLabel = (role) => {
     if (role === 'store_owner') return 'Owner';
     if (role === 'admin') return 'Admin';
+    if (role === 'moderator') return 'Moderator';
     return 'Rater';
   };
 

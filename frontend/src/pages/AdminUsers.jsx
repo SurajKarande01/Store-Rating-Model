@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
-import StarRating from '../components/StarRating';
+import { useAuthStore } from '../store/useAuthStore';
 import * as Dialog from '@radix-ui/react-dialog';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Mail, MapPin, User, ArrowUpDown, ChevronUp, ChevronDown, Plus, RefreshCw, Eye, X, Star } from 'lucide-react';
+import { Search, Mail, MapPin, User, Phone, Globe, FileText, ArrowUpDown, ChevronUp, ChevronDown, Plus, RefreshCw, Eye, X, Star, Loader2, ShieldAlert, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const AdminUsers = () => {
+  const currentUser = useAuthStore((state) => state.user);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ name: '', email: '', address: '', role: '' });
@@ -16,6 +17,7 @@ const AdminUsers = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [loadingDetail, setLoadingDetail] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -66,12 +68,60 @@ const AdminUsers = () => {
     }
   };
 
+  const handlePromote = async (id) => {
+    setActionLoading(true);
+    try {
+      await api.put(`/admin/users/${id}/promote-moderator`);
+      toast.success('User promoted to Moderator successfully!');
+      setModalOpen(false);
+      fetchUsers();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Promotion failed.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDemote = async (id) => {
+    setActionLoading(true);
+    try {
+      await api.put(`/admin/users/${id}/demote-moderator`);
+      toast.success('Moderator demoted successfully!');
+      setModalOpen(false);
+      fetchUsers();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Demotion failed.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to permanently delete this user account? This action cannot be undone.')) {
+      return;
+    }
+    setActionLoading(true);
+    try {
+      const deleteUrl = currentUser.role === 'admin' ? `/admin/users/${id}` : `/moderator/users/${id}`;
+      await api.delete(deleteUrl);
+      toast.success('User account deleted successfully.');
+      setModalOpen(false);
+      fetchUsers();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Deletion failed.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case 'admin':
         return 'bg-red-500/15 text-red-400 border border-red-500/20';
       case 'store_owner':
         return 'bg-amber-500/15 text-amber-400 border border-amber-500/20';
+      case 'moderator':
+        return 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/20';
       default:
         return 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20';
     }
@@ -80,7 +130,20 @@ const AdminUsers = () => {
   const getRoleLabel = (role) => {
     if (role === 'store_owner') return 'Owner';
     if (role === 'admin') return 'Admin';
+    if (role === 'moderator') return 'Moderator';
     return 'Rater';
+  };
+
+  const canDelete = (u) => {
+    if (!u) return false;
+    if (u.id === currentUser.id) return false;
+    if (currentUser.role === 'admin') {
+      return u.role !== 'admin';
+    }
+    if (currentUser.role === 'moderator') {
+      return u.role === 'user' || u.role === 'store_owner';
+    }
+    return false;
   };
 
   return (
@@ -102,13 +165,15 @@ const AdminUsers = () => {
             <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
             Refresh
           </button>
-          <Link
-            to="/admin/add-user"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold gradient-button"
-          >
-            <Plus size={16} />
-            <span>Add User</span>
-          </Link>
+          {currentUser.role === 'admin' && (
+            <Link
+              to="/admin/add-user"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold gradient-button"
+            >
+              <Plus size={16} />
+              <span>Add User</span>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -149,6 +214,7 @@ const AdminUsers = () => {
           >
             <option value="">All Roles</option>
             <option value="admin">Admin</option>
+            <option value="moderator">Moderator</option>
             <option value="user">Rater</option>
             <option value="store_owner">Store Owner</option>
           </select>
@@ -204,7 +270,7 @@ const AdminUsers = () => {
                     </div>
                   </th>
                   <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">
-                    Actions
+                    Status / Actions
                   </th>
                 </tr>
               </thead>
@@ -224,14 +290,19 @@ const AdminUsers = () => {
                         animate={{ opacity: 1 }}
                         className="hover:bg-slate-900/40 transition-colors"
                       >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-200">
-                          {u.name}
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-200 flex items-center gap-2">
+                          <span>{u.name}</span>
+                          {u.requestedModerator && (
+                            <span className="px-1.5 py-0.5 rounded bg-violet-500/20 text-violet-300 text-[9px] font-bold border border-violet-500/30 animate-pulse">
+                              REQ MOD
+                            </span>
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
                           {u.email}
                         </td>
                         <td className="px-6 py-4 text-sm text-slate-400 max-w-xs truncate">
-                          {u.address || <span className="text-slate-700 italic">No address</span>}
+                          {u.location || u.address || <span className="text-slate-700 italic">No address/location</span>}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${getRoleBadgeColor(u.role)}`}>
@@ -244,7 +315,7 @@ const AdminUsers = () => {
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-800 text-violet-400 hover:text-violet-300 hover:bg-slate-800 hover:border-slate-700 transition-all outline-none"
                           >
                             <Eye size={13} />
-                            <span>View</span>
+                            <span>View / Manage</span>
                           </button>
                         </td>
                       </motion.tr>
@@ -265,7 +336,7 @@ const AdminUsers = () => {
             <div className="flex justify-between items-center mb-6">
               <Dialog.Title className="text-lg font-bold text-slate-100 flex items-center gap-2">
                 <User size={18} className="text-violet-500" />
-                User Details
+                User Details & Actions
               </Dialog.Title>
               <Dialog.Close asChild>
                 <button className="text-slate-500 hover:text-slate-300 transition-colors p-1 rounded-lg hover:bg-slate-800 outline-none">
@@ -291,17 +362,51 @@ const AdminUsers = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Email Address</label>
-                  <p className="text-sm text-slate-300 font-medium mt-0.5">{selectedUser.email}</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Email Address</label>
+                    <p className="text-xs text-slate-300 font-medium mt-0.5 truncate">{selectedUser.email}</p>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                      <Phone size={10} />
+                      Phone Number
+                    </label>
+                    <p className="text-xs text-slate-300 font-medium mt-0.5">
+                      {selectedUser.phone || <span className="text-slate-700 italic">Not provided</span>}
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Address</label>
-                  <p className="text-sm text-slate-400 mt-0.5 leading-relaxed">
-                    {selectedUser.address || <span className="text-slate-700 italic">No address provided</span>}
-                  </p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                      <MapPin size={10} />
+                      Location
+                    </label>
+                    <p className="text-xs text-slate-300 font-medium mt-0.5">
+                      {selectedUser.location || <span className="text-slate-700 italic">Not provided</span>}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Address</label>
+                    <p className="text-xs text-slate-400 mt-0.5 leading-relaxed truncate">
+                      {selectedUser.address || <span className="text-slate-700 italic">Not provided</span>}
+                    </p>
+                  </div>
                 </div>
+
+                {selectedUser.storeDescription && (
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                      <FileText size={10} />
+                      Store Description
+                    </label>
+                    <p className="text-xs text-slate-300 mt-0.5 bg-slate-950/40 p-2.5 rounded-lg border border-slate-850/60 max-h-24 overflow-y-auto leading-relaxed">
+                      {selectedUser.storeDescription}
+                    </p>
+                  </div>
+                )}
 
                 {selectedUser.role === 'store_owner' && (
                   <div className="border-t border-slate-800/80 pt-4 mt-4 space-y-3">
@@ -319,7 +424,7 @@ const AdminUsers = () => {
                     </div>
                     
                     {selectedUser.stores && selectedUser.stores.length > 0 ? (
-                      <div className="max-h-32 overflow-y-auto space-y-2 pr-1">
+                      <div className="max-h-24 overflow-y-auto space-y-2 pr-1">
                         {selectedUser.stores.map((store) => (
                           <div key={store.id} className="flex justify-between items-center bg-slate-950/40 border border-slate-850 p-2 rounded-lg text-xs">
                             <span className="font-semibold text-slate-300">{store.name}</span>
@@ -334,6 +439,57 @@ const AdminUsers = () => {
                     )}
                   </div>
                 )}
+
+                {/* Management Actions */}
+                <div className="border-t border-slate-800/80 pt-4 mt-4 space-y-3">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                    Management Actions
+                  </label>
+                  
+                  {selectedUser.requestedModerator && currentUser.role === 'admin' && (
+                    <div className="bg-violet-500/10 border border-violet-500/20 p-2.5 rounded-xl flex items-start gap-2.5 mb-2">
+                      <ShieldAlert size={16} className="text-violet-400 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-xs font-semibold text-violet-300">Upgrade Requested</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">This user requested to be upgraded to Moderator.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap gap-2">
+                    {/* Admin Promote/Demote Actions */}
+                    {currentUser.role === 'admin' && selectedUser.role === 'user' && (
+                      <button
+                        onClick={() => handlePromote(selectedUser.id)}
+                        disabled={actionLoading}
+                        className="px-3 py-1.5 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors outline-none flex items-center gap-1 shadow-md shadow-violet-600/10"
+                      >
+                        {selectedUser.requestedModerator ? 'Accept Moderator Upgrade' : 'Promote to Moderator'}
+                      </button>
+                    )}
+                    {currentUser.role === 'admin' && selectedUser.role === 'moderator' && (
+                      <button
+                        onClick={() => handleDemote(selectedUser.id)}
+                        disabled={actionLoading}
+                        className="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors outline-none flex items-center gap-1"
+                      >
+                        Demote to Rater
+                      </button>
+                    )}
+
+                    {/* Delete Action (Admin/Moderator) */}
+                    {canDelete(selectedUser) && (
+                      <button
+                        onClick={() => handleDelete(selectedUser.id)}
+                        disabled={actionLoading}
+                        className="px-3 py-1.5 bg-red-650 hover:bg-red-600 disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors outline-none flex items-center gap-1 shadow-md shadow-red-600/10"
+                      >
+                        <Trash2 size={13} />
+                        Delete User Account
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
 

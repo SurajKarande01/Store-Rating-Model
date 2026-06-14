@@ -31,6 +31,14 @@ export const useAuthStore = create((set) => {
       // Redirect to login if needed, or let the router handle it
     },
 
+    updateUserProfile: (profileData) => {
+      set((state) => {
+        if (!state.user) return state;
+        const updatedUser = { ...state.user, ...profileData };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        return { user: updatedUser };
+      });
+    },
     updateUserAddress: (newAddress) => {
       set((state) => {
         if (!state.user) return state;

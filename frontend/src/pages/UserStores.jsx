@@ -3,7 +3,7 @@ import api from '../api/axios';
 import toast from 'react-hot-toast';
 import StarRating from '../components/StarRating';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Star, RefreshCw, ArrowUpDown, ChevronUp, ChevronDown, SlidersHorizontal } from 'lucide-react';
+import { Search, MapPin, Star, RefreshCw, ArrowUpDown, ChevronUp, ChevronDown, SlidersHorizontal, Loader2 } from 'lucide-react';
 
 const UserStores = () => {
   const [stores, setStores] = useState([]);
