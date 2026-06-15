@@ -1,8 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { Star, LogOut, Key, LayoutDashboard, Store, Users, User as UserIcon, ChevronDown } from 'lucide-react';
+import { LogOut, Key, LayoutDashboard, Store, Users, User as UserIcon, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Logo from './Logo';
 
 const Navbar = () => {
   const { user, logout } = useAuthStore();
@@ -88,14 +89,13 @@ const Navbar = () => {
     <nav className="glass-navbar border-slate-900 bg-slate-950/80 backdrop-blur-md px-6 py-3 flex items-center justify-between shadow-lg">
       <Link to="/" className="flex items-center gap-2 select-none group">
         <motion.div
-          whileHover={{ rotate: 360, scale: 1.15 }}
-          transition={{ duration: 0.5 }}
-          className="bg-gradient-to-tr from-violet-600 to-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-violet-500/25"
+          whileHover={{ scale: 1.1 }}
+          className="bg-indigo-600/10 border border-indigo-500/20 p-1.5 rounded-xl text-indigo-400 shadow-md shadow-indigo-950/20"
         >
-          <Star size={18} fill="currentColor" />
+          <Logo className="w-5 h-5" />
         </motion.div>
-        <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
-          Store<span className="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">Pulse</span>
+        <span className="font-extrabold text-xl tracking-tight text-slate-100 group-hover:opacity-90 transition-opacity">
+          Rate<span className="text-indigo-400">Pulse</span>
         </span>
       </Link>
 

@@ -11,8 +11,8 @@
   <groupId>com.storerating</groupId>
   <artifactId>api</artifactId>
   <version>1.0.0</version>
-  <name>store-rating-api</name>
-  <description>Store Rating Platform Backend API</description>
+  <name>rate-pulse-api</name>
+  <description>Rate Pulse Backend API</description>
   <properties>
     <java.version>17</java.version>
   </properties>

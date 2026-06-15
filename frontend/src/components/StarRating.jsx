@@ -19,7 +19,7 @@ const StarRating = ({ rating = 0, onRate, readonly = false, size = 20 }) => {
             className={`transition-colors duration-200 outline-none ${
               readonly ? 'cursor-default' : 'cursor-pointer'
             } ${
-              isFilled ? 'text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.3)]' : 'text-slate-600 hover:text-slate-400'
+              isFilled ? 'text-amber-500' : 'text-slate-700 hover:text-slate-500'
             }`}
             onClick={() => !readonly && onRate && onRate(star)}
             onMouseEnter={() => !readonly && setHover(star)}

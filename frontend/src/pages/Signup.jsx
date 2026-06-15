@@ -4,6 +4,7 @@ import api from '../api/axios';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { User, Mail, MapPin, Lock, Phone, FileText, ArrowRight, Loader2, Star, Shield } from 'lucide-react';
+import Logo from '../components/Logo';
 
 const validate = (form) => {
   const errors = {};
@@ -88,11 +89,11 @@ const Signup = () => {
         className="w-full max-w-lg glass-card rounded-2xl p-8 relative z-10 border-slate-800"
       >
         <div className="flex flex-col items-center mb-6">
-          <div className="bg-gradient-to-tr from-violet-600 to-indigo-600 p-3 rounded-2xl text-white shadow-xl shadow-violet-500/20 mb-4">
-            <Star size={24} fill="currentColor" />
+          <div className="bg-indigo-600/10 border border-indigo-500/20 p-3 rounded-2xl text-indigo-400 shadow-md shadow-indigo-950/20 mb-4">
+            <Logo className="w-6 h-6" />
           </div>
           <h1 className="text-2xl font-bold text-slate-100">Create Account</h1>
-          <p className="text-slate-400 text-sm mt-1">Join StorePulse and review local business registries</p>
+          <p className="text-slate-400 text-sm mt-1">Join Rate Pulse and review local business registries</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
