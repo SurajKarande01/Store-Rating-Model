@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+/**
+ * Represents the JwtTokenProvider class.
+ */
 
 @Component
 public class JwtTokenProvider {
@@ -18,10 +21,17 @@ public class JwtTokenProvider {
 
     @Value("${app.jwt.expiration-ms}")
     private int jwtExpirationInMs;
+    /**
+     * Gets the signingKey.
+     * @return the signingKey
+     */
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
+    /**
+     * Executes the generateToken operation.
+     */
 
     public String generateToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
@@ -43,6 +53,10 @@ public class JwtTokenProvider {
                 .signWith(getSigningKey())
                 .compact();
     }
+    /**
+     * Gets the userIdFromJWT.
+     * @return the userIdFromJWT
+     */
 
     public Long getUserIdFromJWT(String token) {
         Claims claims = Jwts.parser()
@@ -53,6 +67,10 @@ public class JwtTokenProvider {
 
         return ((Number) claims.get("id")).longValue();
     }
+    /**
+     * Gets the userEmailFromJWT.
+     * @return the userEmailFromJWT
+     */
 
     public String getUserEmailFromJWT(String token) {
         Claims claims = Jwts.parser()
@@ -63,6 +81,9 @@ public class JwtTokenProvider {
 
         return claims.getSubject();
     }
+    /**
+     * Executes the validateToken operation.
+     */
 
     public boolean validateToken(String authToken) {
         try {

@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+/**
+ * Represents the ModeratorController class.
+ */
 
 @RestController
 @RequestMapping("/api/moderator")
@@ -35,6 +38,9 @@ public class ModeratorController {
 
     @Autowired
     private ActivityRepository activityRepository;
+    /**
+     * Executes the Deletes user operation.
+     */
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> deleteUser(
@@ -73,6 +79,9 @@ public class ModeratorController {
         response.put("message", "User account deleted successfully by moderator.");
         return ResponseEntity.ok(response);
     }
+    /**
+     * Executes the Deletes review operation.
+     */
 
     @DeleteMapping("/reviews/{id}")
     public ResponseEntity<?> deleteReview(

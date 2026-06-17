@@ -14,9 +14,15 @@ import UserStores from './pages/UserStores';
 import StoreOwnerDashboard from './pages/StoreOwnerDashboard';
 import ChangePassword from './pages/ChangePassword';
 
+/**
+ * App component.
+ */
 const App = () => {
   const { isAuthenticated, user } = useAuthStore();
 
+  /**
+   * getHomeRedirect utility/helper function.
+   */
   const getHomeRedirect = () => {
     if (!isAuthenticated) return '/login';
     const map = { 

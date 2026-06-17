@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+/**
+ * Represents the UserController class.
+ */
 
 @RestController
 @RequestMapping("/api/users")
@@ -36,6 +39,9 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    /**
+     * Executes the changePassword operation.
+     */
 
     @PutMapping("/password")
     public ResponseEntity<?> changePassword(
@@ -66,6 +72,9 @@ public class UserController {
         response.put("message", "Password updated successfully.");
         return ResponseEntity.ok(response);
     }
+    /**
+     * Executes the updateProfile operation.
+     */
 
     @PutMapping("/profile")
     public ResponseEntity<?> updateProfile(
@@ -142,6 +151,9 @@ public class UserController {
         response.put("user", user);
         return ResponseEntity.ok(response);
     }
+    /**
+     * Executes the requestModerator operation.
+     */
 
     @PostMapping("/request-moderator")
     public ResponseEntity<?> requestModerator(@AuthenticationPrincipal UserPrincipal userPrincipal) {

@@ -6,6 +6,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Mail, MapPin, Star, ArrowUpDown, ChevronUp, ChevronDown, Plus, RefreshCw, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+/**
+ * AdminStores component.
+ */
 const AdminStores = () => {
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +35,9 @@ const AdminStores = () => {
     fetchStores();
   }, [fetchStores]);
 
+  /**
+   * Handles the sort event.
+   */
   const handleSort = (field) => {
     if (sortBy === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -41,6 +47,9 @@ const AdminStores = () => {
     }
   };
 
+  /**
+   * SortIcon component.
+   */
   const SortIcon = ({ field }) => {
     if (sortBy !== field) return <ArrowUpDown size={14} className="text-slate-500" />;
     return sortOrder === 'asc' 

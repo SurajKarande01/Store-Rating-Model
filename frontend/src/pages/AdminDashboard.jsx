@@ -4,12 +4,18 @@ import { motion } from 'framer-motion';
 import { Users, Store, Star, RefreshCw, Loader2, ListCollapse, Calendar, Activity as ActivityIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+/**
+ * AdminDashboard component.
+ */
 const AdminDashboard = () => {
   const [stats, setStats] = useState({ totalUsers: 0, totalStores: 0, totalRatings: 0 });
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activitiesLoading, setActivitiesLoading] = useState(false);
 
+  /**
+   * Fetches statsAndActivities data from the API.
+   */
   const fetchStatsAndActivities = async () => {
     setLoading(true);
     try {

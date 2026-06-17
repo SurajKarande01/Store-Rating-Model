@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+/**
+ * Represents the AuthController class.
+ */
 
 @RestController
 @RequestMapping("/api/auth")
@@ -48,6 +51,9 @@ public class AuthController {
 
     @Autowired
     private JwtTokenProvider tokenProvider;
+    /**
+     * Executes the signup operation.
+     */
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest signupRequest) {
@@ -105,6 +111,9 @@ public class AuthController {
         response.put("userId", savedUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+    /**
+     * Executes the login operation.
+     */
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {

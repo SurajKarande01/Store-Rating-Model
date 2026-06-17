@@ -7,6 +7,9 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { Star, Award, Store, MessageSquare, Calendar, Loader2, RefreshCw, Pin, PinOff, Image, Edit, X, Phone, MapPin, FileText, Mail, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+/**
+ * StoreOwnerDashboard component.
+ */
 const StoreOwnerDashboard = () => {
   const currentUser = useAuthStore((state) => state.user);
   const updateUserProfile = useAuthStore((state) => state.updateUserProfile);
@@ -33,6 +36,9 @@ const StoreOwnerDashboard = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [imageLoading, setImageLoading] = useState(false);
 
+  /**
+   * Fetches dashboard data from the API.
+   */
   const fetchDashboard = async () => {
     setLoading(true);
     try {
@@ -50,6 +56,9 @@ const StoreOwnerDashboard = () => {
     fetchDashboard();
   }, []);
 
+  /**
+   * openProfileModal utility/helper function.
+   */
   const openProfileModal = () => {
     setProfileForm({
       name: currentUser.name || '',
@@ -62,6 +71,9 @@ const StoreOwnerDashboard = () => {
     setProfileModalOpen(true);
   };
 
+  /**
+   * Handles the profileSubmit event.
+   */
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
     setProfileLoading(true);
@@ -78,12 +90,18 @@ const StoreOwnerDashboard = () => {
     }
   };
 
+  /**
+   * openImageModal utility/helper function.
+   */
   const openImageModal = (store) => {
     setSelectedStore(store);
     setImageUrl(store.imageUrl || '');
     setImageModalOpen(true);
   };
 
+  /**
+   * Handles the imageSubmit event.
+   */
   const handleImageSubmit = async (e) => {
     e.preventDefault();
     setImageLoading(true);
@@ -99,6 +117,9 @@ const StoreOwnerDashboard = () => {
     }
   };
 
+  /**
+   * togglePin utility/helper function.
+   */
   const togglePin = async (ratingId) => {
     setPinLoading(true);
     try {

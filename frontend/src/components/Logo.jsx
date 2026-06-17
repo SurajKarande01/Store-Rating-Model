@@ -1,5 +1,8 @@
 import React from 'react';
 
+/**
+ * Logo component.
+ */
 const Logo = ({ className = "w-6 h-6", color = "currentColor" }) => {
   return (
     <svg

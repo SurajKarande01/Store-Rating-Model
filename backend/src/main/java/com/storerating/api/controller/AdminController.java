@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+/**
+ * Represents the AdminController class.
+ */
 
 @RestController
 @RequestMapping("/api/admin")
@@ -31,6 +34,10 @@ public class AdminController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    /**
+     * Gets the dashboard.
+     * @return the dashboard
+     */
 
     @GetMapping("/dashboard")
     public ResponseEntity<DashboardStatsResponse> getDashboard() {
@@ -44,11 +51,18 @@ public class AdminController {
                 .totalRatings(totalRatings)
                 .build());
     }
+    /**
+     * Gets the activities.
+     * @return the activities
+     */
 
     @GetMapping("/activities")
     public ResponseEntity<List<Activity>> getActivities() {
         return ResponseEntity.ok(activityRepository.findAllByOrderByCreatedAtDesc());
     }
+    /**
+     * Executes the Creates user operation.
+     */
 
     @PostMapping("/users")
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserRequest request) {
@@ -106,6 +120,10 @@ public class AdminController {
         response.put("userId", savedUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+    /**
+     * Gets the users.
+     * @return the users
+     */
 
     @GetMapping("/users")
     public ResponseEntity<List<AdminUserResponse>> getUsers(
@@ -192,6 +210,10 @@ public class AdminController {
 
         return ResponseEntity.ok(responseList);
     }
+    /**
+     * Gets the userById.
+     * @return the userById
+     */
 
     @GetMapping("/users/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
@@ -243,6 +265,9 @@ public class AdminController {
 
         return ResponseEntity.ok(response);
     }
+    /**
+     * Executes the promoteModerator operation.
+     */
 
     @PutMapping("/users/{id}/promote-moderator")
     public ResponseEntity<?> promoteModerator(@PathVariable Long id) {
@@ -271,6 +296,9 @@ public class AdminController {
         response.put("message", "User promoted to Moderator successfully.");
         return ResponseEntity.ok(response);
     }
+    /**
+     * Executes the demoteModerator operation.
+     */
 
     @PutMapping("/users/{id}/demote-moderator")
     public ResponseEntity<?> demoteModerator(@PathVariable Long id) {
@@ -299,6 +327,9 @@ public class AdminController {
         response.put("message", "Moderator demoted to Simple User successfully.");
         return ResponseEntity.ok(response);
     }
+    /**
+     * Executes the Deletes user operation.
+     */
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
@@ -331,6 +362,9 @@ public class AdminController {
         response.put("message", "User account deleted successfully.");
         return ResponseEntity.ok(response);
     }
+    /**
+     * Executes the Deletes review operation.
+     */
 
     @DeleteMapping("/reviews/{id}")
     public ResponseEntity<?> deleteReview(@PathVariable Long id) {
@@ -349,6 +383,9 @@ public class AdminController {
         response.put("message", "Review deleted successfully.");
         return ResponseEntity.ok(response);
     }
+    /**
+     * Executes the Creates store operation.
+     */
 
     @PostMapping("/stores")
     public ResponseEntity<?> createStore(@Valid @RequestBody CreateStoreRequest request) {
@@ -395,6 +432,10 @@ public class AdminController {
         response.put("storeId", savedStore.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+    /**
+     * Gets the stores.
+     * @return the stores
+     */
 
     @GetMapping("/stores")
     public ResponseEntity<List<AdminStoreProjection>> getStores(

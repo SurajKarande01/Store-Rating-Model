@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+/**
+ * Represents the RatingController class.
+ */
 
 @RestController
 @RequestMapping("/api/ratings")
@@ -36,6 +39,9 @@ public class RatingController {
 
     @Autowired
     private ActivityRepository activityRepository;
+    /**
+     * Executes the submitRating operation.
+     */
 
     @PostMapping
     public ResponseEntity<?> submitRating(
@@ -83,6 +89,9 @@ public class RatingController {
         response.put("ratingId", savedRating.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+    /**
+     * Executes the updateRating operation.
+     */
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateRating(
@@ -141,6 +150,9 @@ public class RatingController {
         response.put("message", "Rating updated successfully.");
         return ResponseEntity.ok(response);
     }
+    /**
+     * Executes the Deletes rating operation.
+     */
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRating(

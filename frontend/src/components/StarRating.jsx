@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
 
+/**
+ * StarRating component.
+ */
 const StarRating = ({ rating = 0, onRate, readonly = false, size = 20 }) => {
   const [hover, setHover] = useState(0);
 

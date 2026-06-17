@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+/**
+ * Represents the StoreController class.
+ */
 
 @RestController
 @RequestMapping("/api/stores")
@@ -25,6 +28,10 @@ public class StoreController {
 
     @Autowired
     private RatingRepository ratingRepository;
+    /**
+     * Gets the allStores.
+     * @return the allStores
+     */
 
     @GetMapping
     public ResponseEntity<List<StoreProjection>> getAllStores(
@@ -66,6 +73,10 @@ public class StoreController {
 
         return ResponseEntity.ok(stores);
     }
+    /**
+     * Gets the storeRatings.
+     * @return the storeRatings
+     */
 
     @GetMapping("/{id}/ratings")
     public ResponseEntity<?> getStoreRatings(@PathVariable Long id) {

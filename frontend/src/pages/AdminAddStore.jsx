@@ -5,6 +5,9 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { Store, Mail, MapPin, User, Loader2, ArrowLeft } from 'lucide-react';
 
+/**
+ * Validates the input form/data.
+ */
 const validate = (form) => {
   const errors = {};
   if (form.name.length < 20 || form.name.length > 60) {
@@ -19,6 +22,9 @@ const validate = (form) => {
   return errors;
 };
 
+/**
+ * AdminAddStore component.
+ */
 const AdminAddStore = () => {
   const [form, setForm] = useState({ name: '', email: '', address: '', ownerId: '' });
   const [owners, setOwners] = useState([]);
@@ -27,6 +33,9 @@ const AdminAddStore = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    /**
+     * Fetches owners data from the API.
+     */
     const fetchOwners = async () => {
       try {
         const { data } = await api.get('/admin/users', { params: { role: 'store_owner' } });
@@ -38,6 +47,9 @@ const AdminAddStore = () => {
     fetchOwners();
   }, []);
 
+  /**
+   * Handles the change event.
+   */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     if (errors[e.target.name]) {
@@ -45,6 +57,9 @@ const AdminAddStore = () => {
     }
   };
 
+  /**
+   * Handles the submit event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate(form);

@@ -11,9 +11,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+/**
+ * Represents the GlobalExceptionHandler class.
+ */
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     * Executes the handleValidationExceptions operation.
+     */
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -34,6 +40,9 @@ public class GlobalExceptionHandler {
         response.put("message", "Validation failed.");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+    /**
+     * Executes the handleAllExceptions operation.
+     */
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleAllExceptions(Exception ex) {

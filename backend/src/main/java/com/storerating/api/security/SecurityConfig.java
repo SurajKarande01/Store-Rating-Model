@@ -19,6 +19,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.Collections;
+/**
+ * Represents the SecurityConfig class.
+ */
 
 @Configuration
 @EnableWebSecurity
@@ -27,16 +30,25 @@ public class SecurityConfig {
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+    /**
+     * Executes the passwordEncoder operation.
+     */
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    /**
+     * Executes the authenticationManager operation.
+     */
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+    /**
+     * Executes the securityFilterChain operation.
+     */
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -59,6 +71,9 @@ public class SecurityConfig {
 
         return http.build();
     }
+    /**
+     * Executes the corsConfigurationSource operation.
+     */
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

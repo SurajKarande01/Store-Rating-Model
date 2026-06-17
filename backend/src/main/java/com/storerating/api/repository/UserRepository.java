@@ -9,11 +9,23 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+/**
+ * Interface for UserRepository.
+ */
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    /**
+     * Executes the findByEmail operation.
+     */
     Optional<User> findByEmail(String email);
+    /**
+     * Executes the existsByEmail operation.
+     */
     boolean existsByEmail(String email);
+    /**
+     * Executes the findAllFiltered operation.
+     */
 
     @Query("SELECT u FROM User u WHERE " +
             "(:name IS NULL OR LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +

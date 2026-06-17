@@ -8,12 +8,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+/**
+ * Represents the CustomUserDetailsService class.
+ */
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+    /**
+     * Executes the loadUserByUsername operation.
+     */
 
     @Override
     @Transactional
@@ -22,6 +28,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
         return UserPrincipal.create(user);
     }
+    /**
+     * Executes the loadUserById operation.
+     */
 
     @Transactional
     public UserDetails loadUserById(Long id) {

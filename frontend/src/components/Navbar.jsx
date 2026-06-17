@@ -5,10 +5,16 @@ import { LogOut, Key, LayoutDashboard, Store, Users, User as UserIcon, ChevronDo
 import { motion } from 'framer-motion';
 import Logo from './Logo';
 
+/**
+ * Navbar component.
+ */
 const Navbar = () => {
   const { user, logout } = useAuthStore();
   const location = useLocation();
 
+  /**
+   * isActive utility/helper function.
+   */
   const isActive = (path) => location.pathname === path;
 
   const getLinks = () => {
@@ -65,6 +71,9 @@ const Navbar = () => {
     );
   };
 
+  /**
+   * getRoleBadgeColor utility/helper function.
+   */
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case 'admin':
@@ -78,6 +87,9 @@ const Navbar = () => {
     }
   };
 
+  /**
+   * getRoleLabel utility/helper function.
+   */
   const getRoleLabel = (role) => {
     if (role === 'store_owner') return 'Owner';
     if (role === 'admin') return 'Admin';

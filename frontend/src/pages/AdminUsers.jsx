@@ -7,6 +7,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Mail, MapPin, User, Phone, Globe, FileText, ArrowUpDown, ChevronUp, ChevronDown, Plus, RefreshCw, Eye, X, Star, Loader2, ShieldAlert, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+/**
+ * AdminUsers component.
+ */
 const AdminUsers = () => {
   const currentUser = useAuthStore((state) => state.user);
   const [users, setUsers] = useState([]);
@@ -38,6 +41,9 @@ const AdminUsers = () => {
     fetchUsers();
   }, [fetchUsers]);
 
+  /**
+   * Handles the sort event.
+   */
   const handleSort = (field) => {
     if (sortBy === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -47,6 +53,9 @@ const AdminUsers = () => {
     }
   };
 
+  /**
+   * SortIcon component.
+   */
   const SortIcon = ({ field }) => {
     if (sortBy !== field) return <ArrowUpDown size={14} className="text-slate-500" />;
     return sortOrder === 'asc' 
@@ -54,6 +63,9 @@ const AdminUsers = () => {
       : <ChevronDown size={14} className="text-violet-400" />;
   };
 
+  /**
+   * viewUserDetail utility/helper function.
+   */
   const viewUserDetail = async (id) => {
     setLoadingDetail(true);
     try {
@@ -68,6 +80,9 @@ const AdminUsers = () => {
     }
   };
 
+  /**
+   * Handles the promote event.
+   */
   const handlePromote = async (id) => {
     setActionLoading(true);
     try {
@@ -82,6 +97,9 @@ const AdminUsers = () => {
     }
   };
 
+  /**
+   * Handles the demote event.
+   */
   const handleDemote = async (id) => {
     setActionLoading(true);
     try {
@@ -96,6 +114,9 @@ const AdminUsers = () => {
     }
   };
 
+  /**
+   * Handles the delete event.
+   */
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to permanently delete this user account? This action cannot be undone.')) {
       return;
@@ -114,6 +135,9 @@ const AdminUsers = () => {
     }
   };
 
+  /**
+   * getRoleBadgeColor utility/helper function.
+   */
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case 'admin':
@@ -127,6 +151,9 @@ const AdminUsers = () => {
     }
   };
 
+  /**
+   * getRoleLabel utility/helper function.
+   */
   const getRoleLabel = (role) => {
     if (role === 'store_owner') return 'Owner';
     if (role === 'admin') return 'Admin';
@@ -134,6 +161,9 @@ const AdminUsers = () => {
     return 'Rater';
   };
 
+  /**
+   * canDelete utility/helper function.
+   */
   const canDelete = (u) => {
     if (!u) return false;
     if (u.id === currentUser.id) return false;

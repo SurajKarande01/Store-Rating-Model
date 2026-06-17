@@ -7,6 +7,9 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MapPin, Star, RefreshCw, ArrowUpDown, ChevronUp, ChevronDown, SlidersHorizontal, Loader2, Pin, Trash2, Edit, X, User, Phone, Shield, FileText, Send } from 'lucide-react';
 
+/**
+ * UserStores component.
+ */
 const UserStores = () => {
   const currentUser = useAuthStore((state) => state.user);
   const updateUserProfile = useAuthStore((state) => state.updateUserProfile);
@@ -61,6 +64,9 @@ const UserStores = () => {
     fetchStores();
   }, [fetchStores]);
 
+  /**
+   * Handles the requestUpgrade event.
+   */
   const handleRequestUpgrade = async () => {
     setUpgradeLoading(true);
     try {
@@ -74,6 +80,9 @@ const UserStores = () => {
     }
   };
 
+  /**
+   * openProfileModal utility/helper function.
+   */
   const openProfileModal = () => {
     setProfileForm({
       name: currentUser.name || '',
@@ -85,6 +94,9 @@ const UserStores = () => {
     setProfileModalOpen(true);
   };
 
+  /**
+   * Handles the profileSubmit event.
+   */
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
     setProfileLoading(true);
@@ -100,6 +112,9 @@ const UserStores = () => {
     }
   };
 
+  /**
+   * openStoreModal utility/helper function.
+   */
   const openStoreModal = async (store) => {
     setSelectedStore(store);
     setRatingVal(store.userRating || 0);
@@ -109,6 +124,9 @@ const UserStores = () => {
     fetchReviews(store.id, store.userRatingId);
   };
 
+  /**
+   * Fetches reviews data from the API.
+   */
   const fetchReviews = async (storeId, userRatingId) => {
     setReviewsLoading(true);
     try {
@@ -127,6 +145,9 @@ const UserStores = () => {
     }
   };
 
+  /**
+   * Handles the reviewSubmit event.
+   */
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (ratingVal < 1 || ratingVal > 5) {
@@ -153,6 +174,9 @@ const UserStores = () => {
     }
   };
 
+  /**
+   * Handles the deleteReview event.
+   */
   const handleDeleteReview = async (reviewId) => {
     if (!window.confirm('Are you sure you want to delete this review?')) {
       return;
@@ -170,6 +194,9 @@ const UserStores = () => {
     }
   };
 
+  /**
+   * Handles the sort event.
+   */
   const handleSort = (field) => {
     if (sortBy === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -179,6 +206,9 @@ const UserStores = () => {
     }
   };
 
+  /**
+   * SortIcon component.
+   */
   const SortIcon = ({ field }) => {
     if (sortBy !== field) return <ArrowUpDown size={14} className="text-slate-500 transition-colors" />;
     return sortOrder === 'asc' 

@@ -8,10 +8,16 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+/**
+ * Represents the HealthController class.
+ */
 
 @RestController
 @RequestMapping("/api/health")
 public class HealthController {
+    /**
+     * Executes the healthCheck operation.
+     */
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> healthCheck() {

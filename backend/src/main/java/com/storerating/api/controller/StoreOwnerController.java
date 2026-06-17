@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
+/**
+ * Represents the StoreOwnerController class.
+ */
 
 @RestController
 @RequestMapping("/api/store-owner")
@@ -34,6 +37,10 @@ public class StoreOwnerController {
 
     @Autowired
     private ActivityRepository activityRepository;
+    /**
+     * Gets the ownerDashboard.
+     * @return the ownerDashboard
+     */
 
     @GetMapping("/dashboard")
     public ResponseEntity<?> getOwnerDashboard(@AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -83,6 +90,9 @@ public class StoreOwnerController {
                 .raters(raters)
                 .build());
     }
+    /**
+     * Executes the updateStoreImage operation.
+     */
 
     @PutMapping("/store/image")
     public ResponseEntity<?> updateStoreImage(
@@ -112,6 +122,9 @@ public class StoreOwnerController {
         response.put("message", "Store image updated successfully.");
         return ResponseEntity.ok(response);
     }
+    /**
+     * Executes the togglePinRating operation.
+     */
 
     @PutMapping("/ratings/{id}/pin")
     public ResponseEntity<?> togglePinRating(

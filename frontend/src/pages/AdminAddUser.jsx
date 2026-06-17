@@ -5,6 +5,9 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { User, Mail, MapPin, Lock, ShieldCheck, Loader2, ArrowLeft } from 'lucide-react';
 
+/**
+ * Validates the input form/data.
+ */
 const validate = (form) => {
   const errors = {};
   if (form.name.length < 20 || form.name.length > 60) {
@@ -26,12 +29,18 @@ const validate = (form) => {
   return errors;
 };
 
+/**
+ * AdminAddUser component.
+ */
 const AdminAddUser = () => {
   const [form, setForm] = useState({ name: '', email: '', password: '', address: '', role: 'user' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  /**
+   * Handles the change event.
+   */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     if (errors[e.target.name]) {
@@ -39,6 +48,9 @@ const AdminAddUser = () => {
     }
   };
 
+  /**
+   * Handles the submit event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate(form);

@@ -7,12 +7,18 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, ArrowRight, Loader2, Star } from 'lucide-react';
 import Logo from '../components/Logo';
 
+/**
+ * Login component.
+ */
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
 
+  /**
+   * Handles the submit event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);

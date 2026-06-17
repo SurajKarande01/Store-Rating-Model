@@ -6,6 +6,9 @@ import { motion } from 'framer-motion';
 import { User, Mail, MapPin, Lock, Phone, FileText, ArrowRight, Loader2, Star, Shield } from 'lucide-react';
 import Logo from '../components/Logo';
 
+/**
+ * Validates the input form/data.
+ */
 const validate = (form) => {
   const errors = {};
   if (form.name.length < 5 || form.name.length > 60) {
@@ -33,6 +36,9 @@ const validate = (form) => {
   return errors;
 };
 
+/**
+ * Signup component.
+ */
 const Signup = () => {
   const [form, setForm] = useState({
     name: '',
@@ -48,6 +54,9 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  /**
+   * Handles the change event.
+   */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     if (errors[e.target.name]) {
@@ -55,6 +64,9 @@ const Signup = () => {
     }
   };
 
+  /**
+   * Handles the submit event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate(form);

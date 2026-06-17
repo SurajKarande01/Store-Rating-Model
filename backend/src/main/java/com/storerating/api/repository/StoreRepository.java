@@ -7,11 +7,23 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+/**
+ * Interface for StoreRepository.
+ */
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
+    /**
+     * Executes the findByOwnerId operation.
+     */
     List<Store> findByOwnerId(Long ownerId);
+    /**
+     * Executes the existsByEmail operation.
+     */
     boolean existsByEmail(String email);
+    /**
+     * Executes the findAllStoresWithUserRating operation.
+     */
 
     @Query(value = "SELECT s.id as id, s.name as name, s.email as email, s.address as address, " +
             "COALESCE(AVG(r.rating), 0.0) as overallRating, " +
@@ -22,12 +34,21 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "LEFT JOIN ratings r ON r.store_id = s.id " +
             "WHERE (:name IS NULL OR s.name LIKE %:name%) " +
             "AND (:address IS NULL OR s.address LIKE %:address%) " +
+            /**
+             * Executes the findAllStoresWithUserRating operation.
+             */
             "GROUP BY s.id, s.name, s.email, s.address",
+            /**
+             * Executes the findAllStoresWithUserRating operation.
+             */
             nativeQuery = true)
     List<StoreProjection> findAllStoresWithUserRating(
             @Param("userId") Long userId,
             @Param("name") String name,
             @Param("address") String address);
+    /**
+     * Executes the findAllStoresForAdmin operation.
+     */
 
     @Query(value = "SELECT s.id as id, s.name as name, s.email as email, s.address as address, s.owner_id as ownerId, " +
             "COALESCE(AVG(r.rating), 0.0) as rating, " +
@@ -37,7 +58,13 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "WHERE (:name IS NULL OR s.name LIKE %:name%) " +
             "AND (:email IS NULL OR s.email LIKE %:email%) " +
             "AND (:address IS NULL OR s.address LIKE %:address%) " +
+            /**
+             * Executes the findAllStoresForAdmin operation.
+             */
             "GROUP BY s.id, s.name, s.email, s.address, s.owner_id",
+            /**
+             * Executes the findAllStoresForAdmin operation.
+             */
             nativeQuery = true)
     List<AdminStoreProjection> findAllStoresForAdmin(
             @Param("name") String name,

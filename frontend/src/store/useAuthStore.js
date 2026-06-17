@@ -10,6 +10,9 @@ export const useAuthStore = create((set) => {
     token: savedToken || null,
     isAuthenticated: !!savedToken,
 
+    /**
+     * Performs the login action.
+     */
     login: (userData, tokenValue) => {
       localStorage.setItem('token', tokenValue);
       localStorage.setItem('user', JSON.stringify(userData));
@@ -20,6 +23,9 @@ export const useAuthStore = create((set) => {
       });
     },
 
+    /**
+     * Performs the logout action.
+     */
     logout: () => {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
@@ -31,6 +37,9 @@ export const useAuthStore = create((set) => {
       // Redirect to login if needed, or let the router handle it
     },
 
+    /**
+     * Updates the user's profile.
+     */
     updateUserProfile: (profileData) => {
       set((state) => {
         if (!state.user) return state;
@@ -39,6 +48,9 @@ export const useAuthStore = create((set) => {
         return { user: updatedUser };
       });
     },
+    /**
+     * Updates the user's address.
+     */
     updateUserAddress: (newAddress) => {
       set((state) => {
         if (!state.user) return state;

@@ -4,6 +4,9 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { KeyRound, LockKeyhole, Check, Loader2 } from 'lucide-react';
 
+/**
+ * Validates the input form/data.
+ */
 const validate = (form) => {
   const errors = {};
   if (!form.currentPassword) {
@@ -22,11 +25,17 @@ const validate = (form) => {
   return errors;
 };
 
+/**
+ * ChangePassword component.
+ */
 const ChangePassword = () => {
   const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Handles the change event.
+   */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     if (errors[e.target.name]) {
@@ -34,6 +43,9 @@ const ChangePassword = () => {
     }
   };
 
+  /**
+   * Handles the submit event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate(form);
